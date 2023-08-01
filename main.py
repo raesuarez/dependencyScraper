@@ -23,7 +23,9 @@ def loadDepsList(repo):
         for dep in directDeps:
             print(dep[0])
             getDepData(dep[0])
-            table += (dep[0], getURL(), get_latest_commit(getURL()))
+            url = getURL()
+            date = int(get_latest_commit(getURL()))
+            table.append([dep[0], url, int(date)])
             if getDeps(dep[1]) != None and getDevDeps(dep[1]) != None:
                 indirectDeps+=getDeps(dep[1])
                 indirectDeps+=getDevDeps(dep[1])

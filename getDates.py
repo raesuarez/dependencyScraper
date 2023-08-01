@@ -1,11 +1,12 @@
 import requests
 from datetime import datetime
+import USERINFO
 
 #repo = 'https://github.com/express-validator/express-validator'
 
 #HANDLE NONE TYPES
 
-token = ""
+token = USERINFO.token
 
 def get_latest_commit(repo):
     if repo!=None and repo !='':

@@ -1,7 +1,7 @@
 import requests 
+import USERINFO
 
-
-token = ""
+token = USERINFO.token
 
 def getPackage(repo):
     owner, repo = extract_owner_repo(repo)
