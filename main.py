@@ -10,6 +10,7 @@ allDeps = []
 
 def loadDepsList(repo):
     getPackage(repo)
+    table=[]
     indirectDeps=[]
     directDeps = getDeps('0')
     directDeps += getDevDeps('0')
@@ -22,10 +23,29 @@ def loadDepsList(repo):
         for dep in directDeps:
             print(dep[0])
             getDepData(dep[0])
-            f.write(f"  <tr>\n    <td>{dep[0]}</td>\n    <td><a href={getURL()}>{getURL()}</a></td>\n    <td>{get_latest_commit(getURL())}</td>\n  </tr>\n")
+            table += (dep[0], getURL(), get_latest_commit(getURL()))
             if getDeps(dep[1]) != None and getDevDeps(dep[1]) != None:
                 indirectDeps+=getDeps(dep[1])
                 indirectDeps+=getDevDeps(dep[1])
+
+        table = sorted(table, key = itemgetter(2))
+
+        for item in table:
+            daysAgo = item[2]
+            monthsAgo = item[2] // 30
+            yearsAgo = monthsAgo // 12
+    
+            if monthsAgo > 12:
+                item[2]= f"{yearsAgo} years ago"
+            elif daysAgo > 30:
+                item[2]=  f"{monthsAgo} months ago"
+            elif daysAgo < 30:
+                item[2]= f"{daysAgo} days ago"
+    
+            item[1] = item[1].replace('git+', '').replace(".git", '').replace('git:', 'https:').replace('ssh:', 'https:')
+        
+            f.write(f"  <tr>\n    <td>{item[0]}</td>\n    <td><a href={item[1]}>{item[1]}</a></td>\n    <td>{item[2]}</td>\n  </tr>\n")
+        
         f.write('</tbody>\n</table>\n</div>\n')
     return indirectDeps
 
