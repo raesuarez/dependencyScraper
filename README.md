@@ -4,7 +4,7 @@
 
  ### how to use:
 
-Fork this repository.
+Fork this repository and clone it locally to your computer.
 
 Add your repo link and personal access token to USERINFO.py locally on your computer. DO NOT push these changes. 
 
