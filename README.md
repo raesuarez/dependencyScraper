@@ -1,8 +1,8 @@
 # dependencyScraper
 
-##todo: insert intro/background here
+## todo: insert intro/background here
 
-how to use:
+ ### how to use:
 
 Fork this repository.
 
