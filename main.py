@@ -3,9 +3,8 @@ from depDataMine import getDepData, getURL, getDeps, getDevDeps
 from getDates import get_latest_commit
 from datetime import datetime
 from operator import itemgetter
+import USERINFO
 
-
-repo = 'https://github.com/jonschlinkert/get-repository-url'
 
 allDeps = []
 
@@ -118,9 +117,11 @@ def writeToSite():
     f.close()
     return table
 
-#l1 = loadDepsList(repo)
-#depsTest(l1)
-# devsTest(l1)
+repo = USERINFO.repo
+
+l1 = loadDepsList(repo)
+depsTest(l1)
+devsTest(l1)
 writeToSite()
 
 # def loadDevsList(repo):
