@@ -115,6 +115,7 @@ def writeToSite():
             f.write(f"  <tr>\n    <td>{item[0]}</td>\n    <td><a href={item[1]}>{item[1]}</a></td>\n    <td>{item[2]}</td>\n  </tr>\n")
         f.write('</tbody>\n</table>\n</div>\n</body>\n</html>')
     f.close()
+    print('testSite.html is ready now')
     return table
 
 repo = USERINFO.repo
