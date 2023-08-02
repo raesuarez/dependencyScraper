@@ -4,6 +4,9 @@ import semantic_version as semver
 
 
 def parse():
+    """
+    opens pkgContent.json, parses the json content
+    """
     with open("pkgContent.json", "r+", encoding="utf8") as f:
         try:
             parsed = json.load(f)
@@ -14,7 +17,9 @@ def parse():
             print ("getRepoURL: parse JSON object issue")
 
 def getURL():
-    #reads repoInfo and finds the URl of a package
+    '''
+    reads pkgContent.json and returns repository link
+    '''
     with open("pkgContent.json", "r", encoding="utf8") as f:
         try:
             text = f.read()
@@ -27,8 +32,11 @@ def getURL():
             print ("getRepoURL: getURL JSON object issue")  
     
 def getDepData(pkgName):
-    #takes package name as input
-    #writes the package's json file to repoInfo.txt
+    """
+    param: str pkgName, must be a valid npm package name
+    writes the package's json file to repoInfo.txt
+    parse() to parse json file datat
+    """
     if "/" in pkgName:
         pkgName= pkgName.replace("/", "%2F")
     r = requests.get('https://replicate.npmjs.com/registry/'+pkgName)
@@ -38,21 +46,26 @@ def getDepData(pkgName):
     parse()
 
 def getDeps(v):
-    #returns dictionary of dependencies
-    deps = []
+    """
+    param: str v, package version number
+    reads pkgContent.json
+    finds version and returns a list of tuples
+    tuples are pkgName,version
+    if not a valid version, returns latest dependencies in a list of tuples, (pkgName, version)
+    """
+    deps = [] #list for dependency, version tuple
     go = False
     try:
         with open("pkgContent.json", "r") as f:
-            #v = v.replace("~", '').replace('^', '')
             text = f.read()
             info = json.loads(text)
-            if 'versions' in info:
-                if v in info['versions']:
-                    if 'dependencies' in info['versions'][v]:
+            if 'versions' in info: #checks for versions dictionary
+                if v in info['versions']: #if v is valid version number
+                    if 'dependencies' in info['versions'][v]: #finds deps for version number
                             dep = info['versions'][v]['dependencies']
                             for d in dep:
-                                v = dep[d]#.replace("~", '').replace('^', '')
-                                deps.append((d,v))
+                                v = dep[d]
+                                deps.append((d,v)) #pkgName, version tuple 
                             return deps
                     else:
                         #print('no deps')
@@ -60,36 +73,36 @@ def getDeps(v):
                 else:
                     go = True
                     for version in info['versions']:
-                        if semver.match(v, version) and go:
-                            #print('found version')
+                        if semver.match(v, version) and go: #finds a valid version match
                             if 'dependencies' in info['versions'][version]:
                                 dep = info['versions'][version]['dependencies']
-                                #print('found deps')
-                                go = False
+                                go = False #stops at first version match
                                 for d in dep:
                                     version = dep[d]
                                     deps.append((d,version))
                                 return deps
                             else:
                                 break
-            elif 'dependencies' in info:
+            elif 'dependencies' in info: #finds earliest mention of deps
                 dep = info['dependencies']  
                 for d in dep:
                     v = dep[d]
                     deps.append((d,v))
-                print("getDeps: using elif (NOT GOOD)")
+                print("getDeps: using elif") #should only be used during first dep call
                 return deps 
     except ValueError:
         print("dependencyReader: value error")
         return "dependencyReader: value error"
 
-#getDeps("13.9.0")
-
 def getDevDeps(v):
+    """
+    param: str v, package version number
+    same exact function as above except looking for devDependencies
+    returns list of tuples, (pkgName,version)
+    """
     devs = []
     try:
         with open("pkgContent.json", "r") as f:
-            #v = v.replace("~", '').replace('^', '')
             text = f.read()
             info = json.loads(text)
             if 'versions' in info:
@@ -101,19 +114,16 @@ def getDevDeps(v):
                                 devs.append((d,v))
                             return devs
                     else:
-                        #print('no dev deps')
                         return ''
                 else:
                     go = True
                     for version in info["versions"]:
                         if semver.match(v, version) and go:
-                            #print("found version")
                             if 'devDependencies' in info['versions'][version]:
                                 dev = info['versions'][version]['devDependencies']
-                                #print("found dev deps")
                                 go = False
                                 for d in dev:
-                                    v = dev[d]#.replace("~", '').replace('^', '')
+                                    v = dev[d]
                                     devs.append((d,v))
                                 return devs
             elif 'devDependencies' in info:

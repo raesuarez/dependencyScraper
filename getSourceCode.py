@@ -4,6 +4,11 @@ import USERINFO
 token = USERINFO.token
 
 def getPackage(repo):
+    """
+    param: str repo, must be valid javascript/npm Github repository link
+    returns None
+    writes package.json file from the repository to pkgContent.json
+    """
     owner, repo = extract_owner_repo(repo)
     
     url = f"https://api.github.com/repos/{owner}/{repo}/contents"
@@ -24,10 +29,12 @@ def getPackage(repo):
             print("getSourceCode: Error retrieving repository contents.")
 
 def extract_owner_repo(repo):
+    """
+    param: str repo, must be valid javascript/npm Github repository link
+    returns owner, repo
+    gets owner username and package name for API use
+    """
     parts = repo.strip("/").split("/")
     owner = parts[-2]
     repo = parts[-1].replace(".git", "")
     return owner, repo
-
-
-getPackage('https://github.com/express-validator/express-validator')

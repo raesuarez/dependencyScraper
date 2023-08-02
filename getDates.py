@@ -2,13 +2,14 @@ import requests
 from datetime import datetime
 import USERINFO
 
-#repo = 'https://github.com/express-validator/express-validator'
-
-#HANDLE NONE TYPES
 
 token = USERINFO.token
 
 def get_latest_commit(repo):
+    """
+    param: str repo, valid javascript/npm Github repository link
+    returns int, number of days since last commit
+    """
     if repo!=None and repo !='':
 
         repoOwner = repo.split("/")[-2]
@@ -39,17 +40,6 @@ def get_latest_commit(repo):
                     diff = today - target
 
                     return diff.days
-
-                    # daysAgo = diff.days 
-                    # monthsAgo = diff.days // 30
-                    # yearsAgo = monthsAgo // 12
-
-                    # if monthsAgo > 12:
-                    #     return f"{yearsAgo} years ago"
-                    # elif daysAgo > 30:
-                    #     return f"{monthsAgo} months ago"
-                    # elif daysAgo < 30:
-                    #     return f"{daysAgo} days ago"
                 except KeyError:
                     print("getDates: key error")
                 
@@ -58,5 +48,3 @@ def get_latest_commit(repo):
         else:
             print("getDates: response error")
     
-
-#get_latest_commit("https://github.com/iceddev/remark")
